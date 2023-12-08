@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\Api\PostResource;
 use App\Http\Resources\Api\PostDetailResource;
 
@@ -29,9 +31,17 @@ class PostController extends Controller
             'news_content' => 'required',
         ]);
 
-        $request['author'] = Auth::user()->id;
+        if($request->image) {
+            $fileName = $this->generateRandomString();
+            $extension = $request->image->extension();
 
-        $post = Post::create($request->all());
+            Storage::putFileAs('post-images', $request->image, $fileName . '.' . $extension);
+            $validated['image'] = $fileName . '.' . $extension;
+        }
+
+        $validated['author'] = Auth::user()->id;
+
+        $post = Post::create($validated);
         return new PostDetailResource($post->loadMissing('writer:id,username'));
     }
 
@@ -52,5 +62,16 @@ class PostController extends Controller
         $post->delete();
 
         return new PostDetailResource($post->loadMissing('writer:id,username'));
+    }
+
+    // Php Random String Generator
+    function generateRandomString($length = 30) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 }
