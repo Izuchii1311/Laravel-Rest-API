@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Api;
+namespace App\Http\Resources;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PostResource extends JsonResource
+class CommentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,13 +15,13 @@ class PostResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // return parent::toArray($request);
         return [
             'id' => $this->id,
-            'title' => $this->title,
-            'news_content' => $this->news_content,
+            'comments_content' => $this->comments_content,
+            'user_id' => $this->user_id,
+            'comentator' => $this->whenLoaded('comentator'),
             'created_at' => Carbon::parse($this->created_at)->format('d-m-Y H:i:s'),
-            
         ];
+        // return parent::toArray($request);
     }
 }

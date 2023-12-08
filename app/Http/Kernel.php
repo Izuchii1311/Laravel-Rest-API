@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\PemilikKomentar;
 use App\Http\Middleware\PemilikPostingan;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -65,6 +66,7 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'pemilik_postingan' => PemilikPostingan::class,
+        'pemilik_postingan' => \App\Http\Middleware\PemilikPostingan::class,
+        'pemilik_komentar' => \App\Http\Middleware\PemilikKomentar::class,
     ];
 }
